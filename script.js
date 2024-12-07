@@ -2,10 +2,12 @@
 const cssColorsOriginal=["lightblue","lightgray","pink","red","yellow"];
 let cssColors=cssColorsOriginal;
 class Player {
-	constructor(x, y, id) {
+	constructor(x, y, id, good, bad) {
 		this.x = x;
 		this.y = y;
 		this.id=id;
+		this.good = good;
+		this.bad = bad;
 	}
 	getDomElement(){
 		if(!this.dom){
@@ -105,7 +107,7 @@ function startGame(){
 	//with the correct values provided lets setup the internal structures
 	let v=selector.valueAsNumber;
 	for(let i=0;i<v;i++){
-		players.push(new Player(0,0,i+1));
+		players.push(new Player(0,0,i+1,0,50));
 	}
 	//initialize the iterators
 	playerIterator=cyclicIterator(players);
@@ -165,18 +167,24 @@ async function rollDice() {
 	// result = 1;
 	document.getElementById("dice-results").innerText = `dice: ${result}`;
 	document.getElementById("roll-dice").disabled = true;
+	
 	for (let i = 0; i < result; i++) {
 		await new Promise(resolve => setTimeout(resolve, 200));
 		movePlayer(currentPlayer.value);
 		// setTimeout(movePlayer, 200 * i);
 		if(checkWin(currentPlayer))return i+1;
 	}
+	
+	currentPlayer.value.good = currentPlayer.value.good + Math.round(result * 0.75);
+	currentPlayer.value.bad = currentPlayer.value.bad - Math.round(result * 0.25);
+
 	document.getElementById("roll-dice").disabled = false;
 	//make it slower
 	await new Promise(resolve => setTimeout(resolve, 200));
 	// console.log("finished moving player");
 	checkLadder(currentPlayer.value);
 	checksnakes(currentPlayer.value);
+	confirm(`Atma ${currentPlayer.idx + 1} is at ${currentPlayer.value.good} punya & ${currentPlayer.value.bad} paap`);
 	//next player
 	currentPlayer=playerIterator.next().value;
 	document.getElementById("dice-results").innerText=`Player ${currentPlayer.idx+1}'s turn`;
@@ -207,11 +215,20 @@ function checkLadder(player) {
 	// console.log("chekcing ladder");
 	ladders.forEach(ladder => {
 		if (ladder.startX == player.x && ladder.startY == player.y) {
-			player.x = ladder.endX;
-			player.y = ladder.endY;
-			renderBoard();
+			const useLadder = confirm(`Player ${currentPlayer.idx + 1} at ${player.good} punya found a ladder requiring ${Math.round(ladder.getLength())} punya. Use it?`);
+			if (useLadder) {
+				if (Math.round(ladder.getLength()) <= player.good) {
+					player.x = ladder.endX;
+					player.y = ladder.endY;
+					player.good = Math.abs(player.good - Math.round(ladder.getLength()));
+				} else {
+					confirm(`Player ${currentPlayer.idx + 1} punya insufficient!`);
+				}
+				renderBoard();
+			}
 		}
 	});
+		
 }
 
 function checksnakes(player) {
@@ -219,6 +236,8 @@ function checksnakes(player) {
 		if (Snake.startX == player.x && Snake.startY == player.y) {
 			player.x = Snake.endX;
 			player.y = Snake.endY;
+			player.bad = Math.abs(player.bad - Math.round(Snake.getLength()));
+			confirm(`Atma ${currentPlayer.idx + 1} bit by snake expends ${player.bad} paap ?`);
 			renderBoard();
 		}
 	});
