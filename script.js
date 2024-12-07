@@ -1,5 +1,5 @@
 
-const cssColorsOriginal=["lightblue","lightgray","pink","red","yellow"];
+const cssColorsOriginal=["lightblue","lightgray","pink","red","yellow", "green", "brown", "white","purple","orange"];
 let cssColors=cssColorsOriginal;
 class Player {
 	constructor(x, y, id, good, bad) {
