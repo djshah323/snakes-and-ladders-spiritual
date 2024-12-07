@@ -233,12 +233,13 @@ function checkLadder(player) {
 function checksnakes(player) {
 	snakes.forEach(Snake => {
 		if (Snake.startX == player.x && Snake.startY == player.y) {
-			const snakeBite = confirm(`Mumuukshu ${currentPlayer.idx + 1} bit by snake expends ${player.bad} paap ?`);
+			const snakeBite = confirm(`Mumuukshu ${currentPlayer.idx + 1} bit by snake, expend ${Math.round(Snake.getLength())} punya ?`);
 			if (snakeBite) {
-				player.bad = Math.abs(player.bad - Math.round(Snake.getLength()));
+				player.good = Math.abs(player.good - Math.round(Snake.getLength()));
 			} else {
 				player.x = Snake.endX;
 				player.y = Snake.endY;
+				player.bad = Math.abs(player.bad - Math.round(Snake.getLength()));
 			}
 			renderBoard();
 		}
