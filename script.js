@@ -184,10 +184,9 @@ async function rollDice() {
 	// console.log("finished moving player");
 	checkLadder(currentPlayer.value);
 	checksnakes(currentPlayer.value);
-	confirm(`Atma ${currentPlayer.idx + 1} is at ${currentPlayer.value.good} punya & ${currentPlayer.value.bad} paap`);
 	//next player
 	currentPlayer=playerIterator.next().value;
-	document.getElementById("dice-results").innerText=`Player ${currentPlayer.idx+1}'s turn`;
+	document.getElementById("dice-results").innerText=`Mumukshu ${currentPlayer.idx+1}'s turn. ${currentPlayer.value.good} punya, ${currentPlayer.value.bad} paap`;
 	return result;
 }
 
@@ -222,7 +221,7 @@ function checkLadder(player) {
 					player.y = ladder.endY;
 					player.good = Math.abs(player.good - Math.round(ladder.getLength()));
 				} else {
-					confirm(`Player ${currentPlayer.idx + 1} punya insufficient!`);
+					confirm(`Mumukshu ${currentPlayer.idx + 1} punya insufficient!`);
 				}
 				renderBoard();
 			}
@@ -237,7 +236,7 @@ function checksnakes(player) {
 			player.x = Snake.endX;
 			player.y = Snake.endY;
 			player.bad = Math.abs(player.bad - Math.round(Snake.getLength()));
-			confirm(`Atma ${currentPlayer.idx + 1} bit by snake expends ${player.bad} paap ?`);
+			confirm(`Mumuukshu ${currentPlayer.idx + 1} bit by snake expends ${player.bad} paap ?`);
 			renderBoard();
 		}
 	});
