@@ -100,7 +100,7 @@ function* cyclicIterator(v){
 function startGame(){
 	let selector=document.querySelector("#player-num");
 	if(!selector.checkValidity()){
-		alert("Please select a valid number from 2 to 4");
+		alert("Please select a valid number from 2 to 10");
 		selector.valueAsNumber=2;
 		return;
 	}
@@ -233,10 +233,13 @@ function checkLadder(player) {
 function checksnakes(player) {
 	snakes.forEach(Snake => {
 		if (Snake.startX == player.x && Snake.startY == player.y) {
-			player.x = Snake.endX;
-			player.y = Snake.endY;
-			player.bad = Math.abs(player.bad - Math.round(Snake.getLength()));
-			confirm(`Mumuukshu ${currentPlayer.idx + 1} bit by snake expends ${player.bad} paap ?`);
+			const snakeBite = confirm(`Mumuukshu ${currentPlayer.idx + 1} bit by snake expends ${player.bad} paap ?`);
+			if (snakeBite) {
+				player.bad = Math.abs(player.bad - Math.round(Snake.getLength()));
+			} else {
+				player.x = Snake.endX;
+				player.y = Snake.endY;
+			}
 			renderBoard();
 		}
 	});
