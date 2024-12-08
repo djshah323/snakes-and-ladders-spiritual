@@ -2,12 +2,11 @@
 const cssColorsOriginal=["lightblue","lightgray","pink","red","yellow", "green", "brown", "white","purple","orange"];
 let cssColors=cssColorsOriginal;
 class Player {
-	constructor(x, y, id, good, bad) {
+	constructor(x, y, id, good) {
 		this.x = x;
 		this.y = y;
 		this.id=id;
 		this.good = good;
-		this.bad = bad;
 	}
 	getDomElement(){
 		if(!this.dom){
@@ -107,7 +106,7 @@ function startGame(){
 	//with the correct values provided lets setup the internal structures
 	let v=selector.valueAsNumber;
 	for(let i=0;i<v;i++){
-		players.push(new Player(0,0,i+1,0,50));
+		players.push(new Player(0,0,i+1,10));
 	}
 	//initialize the iterators
 	playerIterator=cyclicIterator(players);
@@ -115,7 +114,7 @@ function startGame(){
 	//show the game board
 	document.querySelector("#gameboard").hidden=false;
 	document.querySelector("#welcome").hidden=true;
-	document.getElementById("dice-results").innerText=`Player ${currentPlayer.idx+1}'s turn`;
+	document.getElementById("dice-results").innerText=`Mumukshu ${currentPlayer.idx+1}'s turn`;
 	document.getElementById("roll-dice").disabled = false;
 	renderBoard();
 }
@@ -176,7 +175,6 @@ async function rollDice() {
 	}
 	
 	currentPlayer.value.good = currentPlayer.value.good + Math.round(result * 0.75);
-	currentPlayer.value.bad = currentPlayer.value.bad - Math.round(result * 0.25);
 
 	document.getElementById("roll-dice").disabled = false;
 	//make it slower
@@ -186,7 +184,7 @@ async function rollDice() {
 	checksnakes(currentPlayer.value);
 	//next player
 	currentPlayer=playerIterator.next().value;
-	document.getElementById("dice-results").innerText=`Mumukshu ${currentPlayer.idx+1}'s turn. ${currentPlayer.value.good} punya, ${currentPlayer.value.bad} paap`;
+	document.getElementById("dice-results").innerText=`Mumukshu ${currentPlayer.idx+1}'s turn. ${currentPlayer.value.good} punya.`;
 	return result;
 }
 
@@ -214,7 +212,7 @@ function checkLadder(player) {
 	// console.log("chekcing ladder");
 	ladders.forEach(ladder => {
 		if (ladder.startX == player.x && ladder.startY == player.y) {
-			const useLadder = confirm(`Player ${currentPlayer.idx + 1} at ${player.good} punya found a ladder requiring ${Math.round(ladder.getLength())} punya. Use it?`);
+			const useLadder = confirm(`Mumukshu ${currentPlayer.idx + 1} at ${player.good} punya found a ladder requiring ${Math.round(ladder.getLength())} punya. Use it?`);
 			if (useLadder) {
 				if (Math.round(ladder.getLength()) <= player.good) {
 					player.x = ladder.endX;
@@ -233,13 +231,12 @@ function checkLadder(player) {
 function checksnakes(player) {
 	snakes.forEach(Snake => {
 		if (Snake.startX == player.x && Snake.startY == player.y) {
-			const snakeBite = confirm(`Mumuukshu ${currentPlayer.idx + 1} bit by snake, expend ${Math.round(Snake.getLength())} punya ?`);
+			const snakeBite = confirm(`Mumukshu ${currentPlayer.idx + 1} bit by snake, expend ${Math.round(Snake.getLength())} punya ?`);
 			if (snakeBite) {
 				player.good = Math.abs(player.good - Math.round(Snake.getLength()));
 			} else {
 				player.x = Snake.endX;
 				player.y = Snake.endY;
-				player.bad = Math.abs(player.bad - Math.round(Snake.getLength()));
 			}
 			renderBoard();
 		}
@@ -254,7 +251,7 @@ function checkWin(data) {
 		if (player.y >= height - 1 && player.x <= 0) {
 			console.log("WIN");
 			document.getElementById("win").hidden = false;
-			document.getElementById("win-text").innerHTML=`Player ${idx+1} wins`;
+			document.getElementById("win-text").innerHTML=`Mumukshu ${idx+1} wins`;
 			return true;
 		}
 	} else {
@@ -262,7 +259,7 @@ function checkWin(data) {
 		if (player.y >= height - 1 && player.x >= width - 1) {
 			console.log("WIN");
 			document.getElementById("win").hidden = false;
-			document.getElementById("win-text").innerHTML=`Player ${idx+1} wins`;
+			document.getElementById("win-text").innerHTML=`Mumukshu ${idx+1} wins`;
 			return true;
 		}
 	}
