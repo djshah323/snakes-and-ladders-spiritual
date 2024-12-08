@@ -208,6 +208,11 @@ function movePlayer(player) {
 	renderBoard();
 }
 
+function answerQues() {
+	const answer = confirm(`Question for Mumukshu ${currentPlayer.idx + 1}`);
+	return answer;
+}
+
 function checkLadder(player) {
 	// console.log("chekcing ladder");
 	ladders.forEach(ladder => {
@@ -215,8 +220,10 @@ function checkLadder(player) {
 			const useLadder = confirm(`Mumukshu ${currentPlayer.idx + 1} at ${player.good} punya found a ladder requiring ${Math.round(ladder.getLength())} punya. Use it?`);
 			if (useLadder) {
 				if (Math.round(ladder.getLength()) <= player.good) {
-					player.x = ladder.endX;
-					player.y = ladder.endY;
+					if (answerQues()) {
+						player.x = ladder.endX;
+						player.y = ladder.endY;
+					}
 					player.good = Math.abs(player.good - Math.round(ladder.getLength()));
 				} else {
 					confirm(`Mumukshu ${currentPlayer.idx + 1} punya insufficient!`);
@@ -231,13 +238,15 @@ function checkLadder(player) {
 function checksnakes(player) {
 	snakes.forEach(Snake => {
 		if (Snake.startX == player.x && Snake.startY == player.y) {
-			const snakeBite = confirm(`Mumukshu ${currentPlayer.idx + 1} bit by snake, expend ${Math.round(Snake.getLength())} punya ?`);
-			if (snakeBite) {
-				player.good = Math.abs(player.good - Math.round(Snake.getLength()));
-			} else {
-				player.x = Snake.endX;
-				player.y = Snake.endY;
-			}
+			if (!answerQues()) {
+				const expendGood = confirm(`Expend ${Math.round(Snake.getLength())} punya instead ?`);
+				if (expendGood) {
+					player.good = Math.abs(player.good - Math.round(ladder.getLength()));
+				} else {	
+					player.x = Snake.endX;
+					player.y = Snake.endY;
+				}
+			} 
 			renderBoard();
 		}
 	});
